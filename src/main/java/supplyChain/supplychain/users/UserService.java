@@ -26,7 +26,6 @@ import java.util.*;
 @RestController
 @RequestMapping("/users")
 public class UserService {
-    public Validation validation;
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Autowired
     public UserRepository userRepository;
@@ -85,17 +84,18 @@ public class UserService {
         if(userRepository.existsByEmail(user.getEmail())){
             return new ResponseEntity<>("A user with the email already exists",HttpStatus.UNAUTHORIZED);
         }
-        if (!validation.isValidEmail(user.getEmail())){
+        if (!Validation.isValidEmail(user.getEmail())){
             return new ResponseEntity<>("Invalid Email",HttpStatus.UNAUTHORIZED);
         }
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         Set<UserRole> role=user.getRole();
-        String otp = validation.generateOTP();
+        String otp = Validation.generateOTP();
         user.setOTP(otp);
         User createdUser =userRepository.save(user);
 
         String message = "Please use the following one time password for verification"+otp;
+        Validation validation = new Validation();
         validation.sendEmail(user.getEmail(),"OTP VALIDATION",message);
         Map<String, String> body = new HashMap<String, String>() {{
             put("username", createdUser.getUsername());
@@ -110,6 +110,7 @@ public class UserService {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             String message = "Please use the following one time password for verification" + user.getOTP();
+            Validation validation = new Validation();
             validation.sendEmail(user.getEmail(), "OTP VALIDATION", message);
             Map<String, String> body = new HashMap<String, String>() {{
                 put("username", user.getUsername());
