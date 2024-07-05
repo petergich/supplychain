@@ -85,7 +85,7 @@ public class UserService {
         if(userRepository.existsByEmail(user.getEmail())){
             return new ResponseEntity<>("A user with the email already exists",HttpStatus.UNAUTHORIZED);
         }
-        if (!Validation.isValidEmail(user.getEmail())){
+        if (!validation.isValidEmail(user.getEmail())){
             return new ResponseEntity<>("Invalid Email",HttpStatus.UNAUTHORIZED);
         }
         String encodedPassword = passwordEncoder.encode(user.getPassword());

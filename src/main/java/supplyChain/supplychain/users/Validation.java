@@ -12,7 +12,7 @@ public class Validation {
     private  JavaMailSender emailSender;
 
 
-    public static boolean isValidEmail(String email) {
+    public boolean isValidEmail(String email) {
         String EMAIL_REGEX = "^(.+)@(.+)$";
         Pattern pattern = Pattern.compile(EMAIL_REGEX);
         Matcher matcher = pattern.matcher(email);
