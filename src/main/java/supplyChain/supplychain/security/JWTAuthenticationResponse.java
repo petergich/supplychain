@@ -9,12 +9,15 @@ public class JWTAuthenticationResponse {
     private String tokenType="Bearer";
 
     public void setToken(String token) {
+
         this.token = token;
     }
     public String getToken(){
-         return token;
+
+        return token;
     }
     public String getTokenType(){
+
         return tokenType;
     }
 }

@@ -43,6 +43,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException{
         String username = ((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getUsername();
         String token = jwtUtil.generateToken(username);
-        response.addDateHeader("Authorization", Long.parseLong("Bearer " + token));
+        response.addDateHeader("Bearer", Long.parseLong( token));
 }
 }

@@ -1,14 +1,10 @@
-package supplyChain.supplychain.users;
+package supplyChain.supplychain.entities;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.persistence.Id;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.Collections;
 import java.util.Set;
 
@@ -21,7 +17,9 @@ public class User {
     private String username;
     @NotBlank(message="Password is required")
     private String password;
-    @NotNull(message="Role is required")
+    @ElementCollection(targetClass = UserRole.class)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
     private Set<UserRole> userRole;
     @NotBlank(message="Username is required")
     private String email;

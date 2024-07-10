@@ -25,14 +25,12 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter{
     }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain ) throws ServletException, IOException {
-        final String authorizationHeader = request.getHeader("Authorization");
-
-
+        final String authorizationHeader = request.getHeader("Bearer");
         String username = null;
         String token = null;
 
-        if (username !=null && authorizationHeader.startsWith("Bearer ")){
-            token = authorizationHeader.substring(7);
+        if (authorizationHeader != null){
+            token = authorizationHeader;
             username = jwtUtil.getUsernameFromToken(token);
 
         }

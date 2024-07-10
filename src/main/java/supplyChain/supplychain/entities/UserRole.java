@@ -1,4 +1,4 @@
-package supplyChain.supplychain.users;
+package supplyChain.supplychain.entities;
 
 public enum UserRole {
     ROLE_ADMIN,

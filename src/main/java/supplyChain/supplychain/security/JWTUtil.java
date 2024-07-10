@@ -36,7 +36,9 @@ public class JWTUtil {
                 .getBody();
         return claims.getSubject();
     }
-
+    public String getSecret(){
+        return secret;
+    }
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
