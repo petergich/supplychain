@@ -1,6 +1,6 @@
 package supplyChain.supplychain.security;
 
-import supplyChain.supplychain.users.LoginRequest;
+import supplyChain.supplychain.dto.LoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;

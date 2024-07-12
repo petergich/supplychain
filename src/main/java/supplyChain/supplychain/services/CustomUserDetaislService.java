@@ -1,4 +1,4 @@
-package supplyChain.supplychain.users;
+package supplyChain.supplychain.services;
 
 
 import org.springframework.security.core.userdetails.UserDetails;

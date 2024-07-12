@@ -10,17 +10,14 @@ import supplyChain.supplychain.repositories.ProductCategoryRepository;
 import supplyChain.supplychain.repositories.ProductRepository;
 import supplyChain.supplychain.repositories.UserRepository;
 import supplyChain.supplychain.entities.UserRole;
-import supplyChain.supplychain.security.JWTAuthenticationFilter;
 import supplyChain.supplychain.security.JWTAuthenticationResponse;
-import supplyChain.supplychain.users.LoginRequest;
-import supplyChain.supplychain.users.Validation;
+import supplyChain.supplychain.dto.LoginRequest;
+import supplyChain.supplychain.security.Validation;
 import supplyChain.supplychain.security.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
@@ -47,7 +44,14 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-    public Object login(LoginRequest loginRequest){
+    public Object login(LoginRequest loginRequest) {
+        if(!userRepository.existsByUsername(loginRequest.getUsername())){
+            Map<String, Object> body = new HashMap<>();
+            body.put("message", "invalid credentials");
+            return body;
+        }
+        User user = userRepository.findByUsername(loginRequest.getUsername()).get();
+        if(user.getEmailVerified()){
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -59,13 +63,22 @@ public class UserService {
             List<Product> products = productRepository.findAll();
             List<ProductCategory> categories = productCategoryRepository.findAll();
             Map<String, Object> body = new HashMap<>();
-            body.put("token",jwt);
+            body.put("token", jwt);
             body.put("username", loginRequest.getUsername());
-            body.put("products",products);
-            body.put("categories",categories);
+            body.put("products", products);
+            body.put("categories", categories);
+            body.put("message","Successful");
             return body;
         } catch (AuthenticationException e) {
-            throw new IllegalArgumentException("BAD CREDENTIALS");
+            Map<String, Object> body = new HashMap<>();
+            body.put("message", "Wrong credentials");
+            return body;
+        }
+    }
+        else{
+            Map<String, Object> body = new HashMap<>();
+            body.put("message", "Please verify your email first");
+            return body;
         }
     }
     public Optional<User> getUserById(Long id) {
@@ -80,19 +93,31 @@ public class UserService {
     public Map<String, String> createUser(User user) {
         if (user.getUsername() == null || user.getEmail() == null || user.getRole() == null || user.getPassword() == null ||
                 user.getUsername().isEmpty() || user.getEmail().isEmpty() || user.getPassword().isEmpty()) {
-            throw new IllegalArgumentException("Please ensure that all fields are correctly filled");
+
+            Map<String, String> body = new HashMap<>();
+            body.put("message", "Please ensure that all fields are correctly filled");
+            return body;
         }
 
         if (userRepository.existsByUsername(user.getUsername())) {
-            throw new IllegalArgumentException("A user with the username already exists");
+            Map<String, String> body = new HashMap<>();
+            body.put("message", "A user with the username already exists");
+
+            return body;
         }
 
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("A user with the email already exists");
+
+            Map<String, String> body = new HashMap<>();
+            body.put("message", "A user with the email already exists");
+            return body;
         }
 
         if (!Validation.isValidEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Invalid Email");
+
+            Map<String, String> body = new HashMap<>();
+            body.put("message", "Invalid Email");
+            return body;
         }
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());
@@ -128,25 +153,26 @@ public class UserService {
             throw new IllegalArgumentException("User not found");
         }
     }
-    public Map<String,String> validateOTP(String otp,String email){
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+    public Map<String,String> validateOTP(String otp,String username){
+        Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             Map<String, String> body = new HashMap<>();
             if(user.getOTP().equals(otp)){
                 user.setEmailVerified(true);
+                userRepository.save(user);
                 body.put("username", user.getUsername());
-                body.put("status", "Verification Successful");
+                body.put("message", "Verification Successful");
                 return body;
             }
             else{
                 body.put("username", user.getUsername());
-                body.put("status", "Invalid OTP");
+                body.put("message", "Invalid OTP");
                 return body;
             }
         }
         Map<String, String> body = new HashMap<>();
-        body.put("message", "Invalid Email. Please check the Email and try again");
+        body.put("message", "Invalid Username");
         return body;
     }
 }
