@@ -67,8 +67,6 @@ public class UserService {
             Map<String, Object> body = new HashMap<>();
             body.put("token", jwt);
             body.put("username", loginRequest.getUsername());
-            body.put("products", products);
-            body.put("categories", categories);
             body.put("message","Successful");
             return body;
         } catch (AuthenticationException e) {
@@ -93,7 +91,7 @@ public class UserService {
     }
 
     public Map<String, String> createUser(User user) {
-        if (user.getUsername() == null || user.getEmail() == null || user.getRole() == null || user.getPassword() == null ||
+        if (user.getUsername() == null || user.getEmail() == null || user.getPassword() == null ||
                 user.getUsername().isEmpty() || user.getEmail().isEmpty() || user.getPassword().isEmpty()) {
 
             Map<String, String> body = new HashMap<>();
@@ -124,7 +122,7 @@ public class UserService {
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-user.setRole(UserRole.MANAGER);
+        user.setRole(UserRole.MANAGER);
 
 
         String otp = Validation.generateOTP();
@@ -133,8 +131,6 @@ user.setRole(UserRole.MANAGER);
 
         String message = "Please use the following one-time password for verification: " + otp;
         validation.sendEmail(user.getEmail(), "OTP VALIDATION", message);
-
-        List<Product> products = productRepository.findAll();
 
         Map<String, String> body = new HashMap<>();
         body.put("username", createdUser.getUsername());

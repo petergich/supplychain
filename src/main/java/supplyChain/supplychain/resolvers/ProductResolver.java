@@ -21,7 +21,7 @@ public class ProductResolver {
         return productRepository.findAll();
     }
 
-    @QueryMapping
+    @QueryMapping()
     public Product product(@Argument Long id) {
         if (productRepository.existsById(id)) {
             return productRepository.findById(id).get();
