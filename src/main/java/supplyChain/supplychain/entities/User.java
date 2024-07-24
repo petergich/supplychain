@@ -20,7 +20,7 @@ public class User {
     @ElementCollection(targetClass = UserRole.class)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    private Set<UserRole> userRole;
+    private UserRole userRole;
     @NotBlank(message="Username is required")
     private String email;
     private boolean emailVerified=false;
@@ -46,12 +46,12 @@ public class User {
     public String getEmail(){
         return email;
     }
-    public Set<UserRole> getRole(){
+    public UserRole getRole(){
         return userRole;
     }
 
     public void setRole(UserRole userRole){
-        this.userRole = Collections.singleton(userRole);
+        this.userRole =userRole;
     }
     public String getUsername() {
         return username;

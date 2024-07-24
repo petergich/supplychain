@@ -2,6 +2,8 @@ package supplyChain.supplychain.services;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import supplyChain.supplychain.entities.Product;
 import supplyChain.supplychain.entities.ProductCategory;
@@ -122,7 +124,9 @@ public class UserService {
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-        Set<UserRole> role = user.getRole();
+user.setRole(UserRole.MANAGER);
+
+
         String otp = Validation.generateOTP();
         user.setOTP(otp);
         User createdUser = userRepository.save(user);
@@ -174,5 +178,17 @@ public class UserService {
         Map<String, String> body = new HashMap<>();
         body.put("message", "Invalid Username");
         return body;
+    }
+    public Object checkToken(String token){
+        if(jwtUtil.validateToken(token)){
+            Map<String, String> body = new HashMap<>();
+            body.put("message", "valid");
+            return body;
+        }
+        else{
+            Map<String, String> body = new HashMap<>();
+            body.put("message", "invalid");
+            return body;
+        }
     }
 }
