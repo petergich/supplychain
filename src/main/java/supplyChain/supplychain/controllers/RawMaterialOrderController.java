@@ -1,24 +1,23 @@
 package supplyChain.supplychain.controllers;
 
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
-import supplyChain.supplychain.entities.ProductOrder;
-import supplyChain.supplychain.services.ProductOrderServise;
+import supplyChain.supplychain.entities.RawMaterialOrder;
+import supplyChain.supplychain.services.RawMaterialOrderService;
 
 @RestController
-@RequestMapping("/productorder")
-public class ProductOrderController {
+@RequestMapping("/rawmaterialorder")
+public class RawMaterialOrderController {
     @Autowired
-    ProductOrderServise productOrderServise;
+    RawMaterialOrderService rawMaterialOrderService;
     @PostMapping("/create")
-    public ResponseEntity<?> addProductOrder(ProductOrder productOrder){
+    public ResponseEntity<?> addProductOrder(RawMaterialOrder rawMaterialOrder){
         try{
-            Object response = productOrderServise.createProductOrder(productOrder);
+            Object response = rawMaterialOrderService.createRawMaterialOrder(rawMaterialOrder);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (HttpServerErrorException.InternalServerError e){
             return new ResponseEntity<>(e,HttpStatus.INTERNAL_SERVER_ERROR);
@@ -26,9 +25,9 @@ public class ProductOrderController {
         }
     }
     @PostMapping("/update")
-    public ResponseEntity<?> updateProductOrder(ProductOrder productOrder){
+    public ResponseEntity<?> updateProductOrder(RawMaterialOrder rawMaterialOrder){
         try{
-            Object response = productOrderServise.updateProduct(productOrder);
+            Object response = rawMaterialOrderService.updateRawMaterialOrder(rawMaterialOrder);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (HttpServerErrorException.InternalServerError e){
             return new ResponseEntity<>(e,HttpStatus.INTERNAL_SERVER_ERROR);
@@ -38,7 +37,7 @@ public class ProductOrderController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProductOrder(@PathVariable Long id){
         try{
-            Object response = productOrderServise.deleteProductOrder(id);
+            Object response = rawMaterialOrderService.deleteRawMaterial(id);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (HttpServerErrorException.InternalServerError e){
             return new ResponseEntity<>(e,HttpStatus.INTERNAL_SERVER_ERROR);

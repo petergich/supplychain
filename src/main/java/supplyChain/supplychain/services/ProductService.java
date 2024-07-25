@@ -2,6 +2,7 @@ package supplyChain.supplychain.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import supplyChain.supplychain.dto.ProductDetails;
 import supplyChain.supplychain.entities.Product;
 import supplyChain.supplychain.entities.ProductCategory;
@@ -25,11 +26,11 @@ public class ProductService {
 
         Product product = new Product();
         ProductCategory category;
-//        try {
+       try {
             category = productCategoryRepository.findByName(productDetails.getCategory()).get();
-//        }catch (HttpClientErrorException.NotFound e) {
-//            throw new IllegalArgumentException("The category does not exist");
-//        }
+       }catch (HttpClientErrorException.NotFound e) {
+         throw new IllegalArgumentException("The category does not exist");
+        }
         product.setCategory(category);
         product.setName(productDetails.getName());
         product.setPrice(productDetails.getPrice());

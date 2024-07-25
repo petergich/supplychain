@@ -5,29 +5,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import supplyChain.supplychain.dto.ProductDetails;
-import supplyChain.supplychain.entities.Product;
-import supplyChain.supplychain.services.ProductService;
+import supplyChain.supplychain.entities.RawMaterial;
 
-import java.rmi.ServerException;
+import supplyChain.supplychain.services.RawMaterialService;
+
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/products")
-public class ProductController {
+@RequestMapping("/rawmaterials")
+public class RawMaterialController {
     @Autowired
-    ProductService productService;
+    RawMaterialService rawMaterialService;
 
 
 
     @PostMapping("/create")
-    public ResponseEntity<?> createProduct(@RequestBody ProductDetails product){
+    public ResponseEntity<?> createProduct(@RequestBody RawMaterial rawMaterial){
         System.out.println("Creating Product");
         try{
-            Object response = productService.createProduct(product);
+            Object response = rawMaterialService.createRawMaterial(rawMaterial);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (IllegalArgumentException e) {
             return new ResponseEntity<>("Unable To process", HttpStatus.OK);
@@ -36,7 +34,7 @@ public class ProductController {
     @GetMapping("/all")
     public Object ResponseEntity(){
         try{
-            Object response = productService.getAllProducts();
+            Object response = rawMaterialService.getAllRawMaterials();
             return new ResponseEntity<>(response,HttpStatus.OK);
         } catch (HttpServerErrorException.InternalServerError e) {
             Map<String, Object> body = new HashMap<>();
@@ -46,13 +44,13 @@ public class ProductController {
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id){
-        Object response = productService.deleteProduct(id);
+        Object response = rawMaterialService.deleteRawMaterial(id);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
     @PostMapping("/edit")
-    public ResponseEntity<?> editProduct(Product product){
+    public ResponseEntity<?> editProduct(RawMaterial rawMaterial){
         try{
-            Object response = productService.editProduct(product);
+            Object response = rawMaterialService.editRawMaterial(rawMaterial);
             return new ResponseEntity<>(response,HttpStatus.OK);
         } catch (HttpServerErrorException.InternalServerError e) {
             Map<String, Object> body = new HashMap<>();
@@ -60,15 +58,15 @@ public class ProductController {
             return new ResponseEntity<>(body, HttpStatus.OK);
         }
     }
-//    @PostMapping("/{id}")
-//    public ResponseEntity<?> updateStock(@PathVariable Long id,@RequestBody Integer quantity){
-//        try{
-//            Object response = productService.updateStock(id,quantity);
-//            return new ResponseEntity<>(response,HttpStatus.OK);
-//        } catch (HttpServerErrorException.InternalServerError e) {
-//            Map<String, Object> body = new HashMap<>();
-//            body.put("message", "Update Operation failed");
-//            return new ResponseEntity<>(body, HttpStatus.OK);
-//        }
-//    }
+    @PostMapping("/{id}")
+    public ResponseEntity<?> updateStock(@PathVariable Long id,@RequestBody Integer quantity){
+        try{
+            Object response = rawMaterialService.updateStock(id,quantity);
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        } catch (HttpServerErrorException.InternalServerError e) {
+            Map<String, Object> body = new HashMap<>();
+            body.put("message", "Update Operation failed");
+            return new ResponseEntity<>(body, HttpStatus.OK);
+        }
+    }
 }

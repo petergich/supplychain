@@ -2,26 +2,27 @@ package supplyChain.supplychain.entities;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-public class ProductOrder {
+public class RawMaterialOrder {
    @Id
    @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
 
 
    @ManyToOne
-   @JoinColumn(name = "product",nullable = false)
-   private Product product;
+   @JoinColumn(name = "rawMaterial",nullable = false)
+   private RawMaterial rawMaterial;
 
    @ManyToOne
    @JoinColumn(name = "purchaseOrder", nullable = false)
    private PurchaseOrder purchaseOrder;
 
-   @NotNull
+   @NotBlank
    private Integer quantity;
-   @NotNull
+    @NotBlank
    private Integer price;
 
     public void setPurchaseOrder(PurchaseOrder purchaseOrder) {
@@ -29,15 +30,15 @@ public class ProductOrder {
         this.purchaseOrder = purchaseOrder;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setRawMaterial(RawMaterial rawMaterial) {
+        this.rawMaterial = rawMaterial;
     }
 
-    public void setQuantity(@NotNull Integer quantity) {
+    public void setQuantity(@NotBlank Integer quantity) {
         this.quantity = quantity;
     }
 
-    public void setPrice(@NotNull Integer price) {
+    public void setPrice(@NotBlank Integer price) {
         this.price = price;
     }
 
@@ -45,11 +46,11 @@ public class ProductOrder {
         return id;
     }
 
-    public @NotNull Integer getQuantity() {
+    public @NotBlank Integer getQuantity() {
         return quantity;
     }
 
-    public @NotNull Integer getPrice() {
+    public @NotBlank Integer getPrice() {
         return price;
     }
 
@@ -57,7 +58,7 @@ public class ProductOrder {
         return purchaseOrder;
     }
 
-    public Product getProduct() {
-        return product;
+    public RawMaterial getrawMaterial() {
+        return rawMaterial;
     }
 }
