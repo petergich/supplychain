@@ -40,4 +40,22 @@ public class ProductCategoryService {
             return body;
 
     }
+    public Object getAllProductCategories(){
+        Map<String, Object> body = new HashMap<>();
+        body.put("categories",productCategoryRepository.findAll());
+        body.put("message", "successful");
+        return body;
+    }
+    public Object deleteProductCategory(Long id){
+        if(productCategoryRepository.existsById(id)){
+            productCategoryRepository.delete(productCategoryRepository.findById(id).get());
+            Map<String, Object> body = new HashMap<>();
+            body.put("message", "successful");
+            return body;
+        } else {
+            Map<String, Object> body = new HashMap<>();
+            body.put("message", "Product Category does not exist");
+            return body;
+        }
+    }
 }

@@ -20,6 +20,16 @@ public class Product {
     @JoinColumn(name = "category_name", nullable = false)
     private ProductCategory category;
 
+    private Integer lowStock = 5;
+
+    public Integer getLowStock() {
+        return lowStock;
+    }
+
+    public void setLowStock(Integer lowStock) {
+        this.lowStock = lowStock;
+    }
+
     public Product() {
 
     }

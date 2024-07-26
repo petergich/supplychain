@@ -1,5 +1,6 @@
 package supplyChain.supplychain.controllers;
 
+import com.sun.jdi.request.InvalidRequestStateException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,15 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import supplyChain.supplychain.dto.LoginRequest;
 import supplyChain.supplychain.entities.User;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 
-@Tag(
-        name = "CRUD REST APIs for Loans in EazyBank",
-        description = "CRUD REST APIs in EazyBank to CREATE, UPDATE, FETCH AND DELETE loan details"
-)
 
 @RestController
 @RequestMapping("/users")
@@ -32,28 +30,12 @@ public class UserController {
     @Autowired
     private UserService userService;
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Create Loan REST API",
-            description = "REST API to create new loan inside EazyBank"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "HTTP Status CREATED"
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "HTTP Status Internal Server Error"
-
-            )
-    }
-    )
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         try {
@@ -79,7 +61,7 @@ public class UserController {
         return new ResponseEntity<>("Successful", HttpStatus.OK);
     }
 
-    @PostMapping("/createuser")
+    @PostMapping("/create")
     public ResponseEntity<?> createUser(@RequestBody User user) {
         try {
             Map<String, String> response = userService.createUser(user);
@@ -108,6 +90,17 @@ public class UserController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+    @PostMapping("/checktoken")
+    public ResponseEntity<?> checkToken(@RequestBody String token){
+        try{
+            Object response = userService.checkToken(token);
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        } catch(InvalidRequestStateException e) {
+            Map<String,String> body = new HashMap<>();
+            body.put("message","An error occured while validating the token");
+            return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
