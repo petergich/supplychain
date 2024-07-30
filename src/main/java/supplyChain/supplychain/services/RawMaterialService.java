@@ -32,7 +32,7 @@ public class RawMaterialService {
     public Object getAllRawMaterials(){
         Map<String, Object> body = new HashMap<>();
         body.put("message", "Successful");
-        body.put("raw materials",rawMaterialRepository.findAll());
+        body.put("rawmaterials",rawMaterialRepository.findAll());
         return body;
     }
     public Object  editRawMaterial(RawMaterial rawMaterial){
@@ -72,6 +72,7 @@ public class RawMaterialService {
         double finalQuatity = existingRawMaterial.getQuantity()+quantity;
         if (finalQuatity>=0){
             existingRawMaterial.setQuantity(finalQuatity);
+            rawMaterialRepository.save(existingRawMaterial);
             return "SUCCESSFULLY UPDATED";
         }
         return "quantity is not available";

@@ -19,7 +19,7 @@ public class RawMaterialPropotion {
     @ManyToOne
     @JoinColumn(name = "raw_material")
     private RawMaterial rawMaterial;
-    @NotBlank(message =  " the Fianal product must be specified")
+    @NotBlank(message =  " the Final product must be specified")
     @ManyToOne
     @JoinColumn
     private Product product;

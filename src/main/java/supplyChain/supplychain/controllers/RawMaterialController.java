@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
+import supplyChain.supplychain.dto.StockUpdate;
 import supplyChain.supplychain.entities.RawMaterial;
 
 import supplyChain.supplychain.services.RawMaterialService;
@@ -58,8 +59,10 @@ public class RawMaterialController {
             return new ResponseEntity<>(body, HttpStatus.OK);
         }
     }
-    @PostMapping("/{id}")
-    public ResponseEntity<?> updateStock(@PathVariable Long id,@RequestBody Integer quantity){
+    @PostMapping("/updatestock")
+    public ResponseEntity<?> updateStock(@RequestBody StockUpdate stockUpdate){
+        Long id = stockUpdate.getId();
+        Integer quantity = stockUpdate.getQuantity();
         try{
             Object response = rawMaterialService.updateStock(id,quantity);
             return new ResponseEntity<>(response,HttpStatus.OK);

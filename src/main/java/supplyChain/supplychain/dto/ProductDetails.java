@@ -13,7 +13,6 @@ public class ProductDetails {
 
         private Integer price;
         @NotNull
-        private Integer quantity = 0;
         private String category;
 
 
@@ -29,12 +28,6 @@ public class ProductDetails {
         }
         public Integer getPrice(){
             return price;
-        }
-        public void setQuanity(Integer quantity){
-            this.quantity = quantity;
-        }
-        public Integer getQuantity(){
-            return quantity;
         }
         public void setCategory(String category){
             this.category = category;

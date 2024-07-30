@@ -4,12 +4,11 @@ package supplyChain.supplychain.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import supplyChain.supplychain.entities.Production;
+import supplyChain.supplychain.dto.ProductionDetails;
 import supplyChain.supplychain.services.ProductionService;
 
 @RestController
@@ -20,9 +19,14 @@ public class ProductionController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<?> createProduction(@RequestBody Long productId, Integer quantity,boolean status){
-        Object response = productionService.createProduction(productId, quantity,status);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<?> createProduction(@RequestBody ProductionDetails productionDetails){
+        if(productionDetails.getProductId() != null && productionDetails.getQuantity() != null && productionDetails.getStatus()) {
+            Object response = productionService.createProduction(productionDetails.getProductId(), productionDetails.getQuantity(), productionDetails.getStatus());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>("Please ensure that all the required data if filled", HttpStatus.NOT_ACCEPTABLE);
+        }
     }
     @PostMapping
     public ResponseEntity<?> completeProduction(@RequestBody Long productionId){

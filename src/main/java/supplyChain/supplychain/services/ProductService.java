@@ -25,32 +25,25 @@ public class ProductService {
     public Object createProduct(ProductDetails productDetails){
 
         Product product = new Product();
-        ProductCategory category;
-       try {
-            category = productCategoryRepository.findByName(productDetails.getCategory()).get();
-       }catch (HttpClientErrorException.NotFound e) {
-         throw new IllegalArgumentException("The category does not exist");
+        if( !productCategoryRepository.existsByName(productDetails.getCategory())){
+            Map<String, Object> body = new HashMap<>();
+            body.put("status", "Category not found");
+            return body;
         }
+        ProductCategory category = productCategoryRepository.findByName(productDetails.getCategory()).get();
         product.setCategory(category);
         product.setName(productDetails.getName());
         product.setPrice(productDetails.getPrice());
 
         if(productRepository.existsByName(product.getName())){
             Map<String, Object> body = new HashMap<>();
-            List<ProductCategory> categories = productCategoryRepository.findAll();
-            List<Product> products = productRepository.findAll();
-            body.put("categories", categories);
-            body.put("products", products);
             body.put("status", "Another product with the same name exists");
             return body;
         }
         else{
             Map<String, Object> body = new HashMap<>();
             productRepository.save(product);
-            List<ProductCategory> categories = productCategoryRepository.findAll();
-            List<Product> products = productRepository.findAll();
-            body.put("categories", categories);
-            body.put("products", products);
+            body.put("products", product);
             body.put("status", "Successfully added");
             return body;
         }

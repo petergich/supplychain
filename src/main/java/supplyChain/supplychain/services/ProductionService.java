@@ -51,7 +51,7 @@ public class ProductionService {
                 rawMaterialRepository.save(rawMaterialPropotion.getRawMaterial());
             }
             Production production = new Production();
-            production.setName("production" +product.getId() + "of " + quantity + " for " + product.getName());
+            production.setName("production" +production.getId() + "of " + quantity + " for " + product.getName());
             production.setFinalProductQuantity(quantity);
             production.setFinished(status);
             productionRepository.save(production);
