@@ -10,10 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import supplyChain.supplychain.entities.Product;
 import supplyChain.supplychain.entities.Production;
 import supplyChain.supplychain.entities.RawMaterialPropotion;
-import supplyChain.supplychain.repositories.ProductRepository;
-import supplyChain.supplychain.repositories.ProductionRepository;
-import supplyChain.supplychain.repositories.RawMaterialProportionRepository;
-import supplyChain.supplychain.repositories.RawMaterialRepository;
+import supplyChain.supplychain.entities.RawMaterialUsed;
+import supplyChain.supplychain.repositories.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +22,7 @@ public class ProductionService {
     @Autowired
     ProductionRepository productionRepository;
     @Autowired
-    RawMaterialUsedService rawMaterialUsedService;
+    RawMaterialUsedRepository rawMaterialUsedRepository;
     @Autowired
     RawMaterialRepository rawMaterialRepository;
     @Autowired
@@ -46,15 +44,21 @@ public class ProductionService {
                    return object;
                }
            }
-            for(RawMaterialPropotion rawMaterialPropotion: rawMatrerialPropotions){
-                rawMaterialPropotion.getRawMaterial().setQuantity(rawMaterialPropotion.getRawMaterial().getQuantity()-rawMaterialPropotion.getPropotion() * quantity);
-                rawMaterialRepository.save(rawMaterialPropotion.getRawMaterial());
-            }
             Production production = new Production();
             production.setName("production" +production.getId() + "of " + quantity + " for " + product.getName());
             production.setFinalProductQuantity(quantity);
             production.setFinished(status);
             productionRepository.save(production);
+            for(RawMaterialPropotion rawMaterialPropotion: rawMatrerialPropotions){
+                RawMaterialUsed rawMaterialUsed = new RawMaterialUsed();
+                rawMaterialUsed.setQuantity(quantity * rawMaterialPropotion.getPropotion());
+                rawMaterialUsed.setRawMaterial(rawMaterialPropotion.getRawMaterial());
+                rawMaterialUsed.setProduction(production);
+                rawMaterialUsedRepository.save(rawMaterialUsed);
+                rawMaterialPropotion.getRawMaterial().setQuantity(rawMaterialPropotion.getRawMaterial().getQuantity()-rawMaterialPropotion.getPropotion() * quantity);
+                rawMaterialRepository.save(rawMaterialPropotion.getRawMaterial());
+            }
+
             if(status){
                 production.setFinished(true);
                 product.setQuantity(product.getQuantity() + quantity);
@@ -85,5 +89,14 @@ public class ProductionService {
             return object;
         }
 
+    }
+    public Object getAllProductions(){
+        List<Production> productions = productionRepository.findAll();
+        Map<Production, List<RawMaterialUsed>> production_instances = new HashMap<>();
+        for(Production production : productions){
+            List<RawMaterialUsed> rawMaterialUsed = rawMaterialUsedRepository.findByProduction(production);
+            production_instances.put(production, rawMaterialUsed);
+        }
+        return production_instances;
     }
 }

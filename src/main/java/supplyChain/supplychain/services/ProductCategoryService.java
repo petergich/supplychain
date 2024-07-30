@@ -28,15 +28,13 @@ public class ProductCategoryService {
 
             Optional<ProductCategory> productcategory = productCategoryRepository.findByName(category.getName());
             if (productCategoryRepository.existsByName(category.getName())) {
-                throw new IllegalArgumentException("The Category already exists");
+                Map<String, Object> body = new HashMap<>();
+                body.put("message", "Product Category already exist");
+                return body;
             }
             productCategoryRepository.save(category);
             Map<String, Object> body = new HashMap<>();
-            List<ProductCategory> categories = productCategoryRepository.findAll();
-            List<Product> products = productRepository.findAll();
-            body.put("categories", categories);
-            body.put("products", products);
-            body.put("status", "Created Successfully");
+            body.put("message", "Created Successfully");
             return body;
 
     }

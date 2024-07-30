@@ -1,22 +1,36 @@
 package supplyChain.supplychain.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class RawmaterialProportionDetails {
 
     private double propotion;
-    private Long rawmaterialid;
-    private Long productid;
+    @NotNull
+    private Long rawMaterialId;
+    @NotNull
 
+    private Long productId;
+
+    public RawmaterialProportionDetails(double propotion, Long rawmaterialid, Long productid) {
+        this.propotion = propotion;
+        this.rawMaterialId = rawmaterialid;
+        this.productId = productid;
+    }
+
+    public RawmaterialProportionDetails() {
+    }
 
     public double getPropotion() {
         return propotion;
     }
 
     public Long getRawMaterialId() {
-        return rawmaterialid;
+        return rawMaterialId;
     }
 
     public Long getProductId() {
-        return productid;
+        return productId;
     }
 
     public void setPropotion(double propotion) {
@@ -24,10 +38,10 @@ public class RawmaterialProportionDetails {
     }
 
     public void setRawMaterialId(Long rawMaterialId) {
-        this.rawmaterialid = rawMaterialId;
+        this.rawMaterialId = rawMaterialId;
     }
 
     public void setProductId(Long productId) {
-        this.productid = productId;
+        this.productId = productId;
     }
 }

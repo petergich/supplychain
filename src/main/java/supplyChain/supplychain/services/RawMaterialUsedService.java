@@ -8,4 +8,5 @@ import supplyChain.supplychain.repositories.RawMaterialUsedRepository;
 public class RawMaterialUsedService {
     @Autowired
     RawMaterialUsedRepository rawMaterialUsedRepository;
+
 }

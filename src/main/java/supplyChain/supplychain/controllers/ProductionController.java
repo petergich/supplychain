@@ -4,10 +4,7 @@ package supplyChain.supplychain.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import supplyChain.supplychain.dto.ProductionDetails;
 import supplyChain.supplychain.services.ProductionService;
 
@@ -32,5 +29,10 @@ public class ProductionController {
     public ResponseEntity<?> completeProduction(@RequestBody Long productionId){
         Object response = productionService.completeProduction(productionId);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllProductions(){
+       Object response = productionService.getAllProductions();
+       return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

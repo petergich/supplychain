@@ -13,7 +13,7 @@ public class RawMaterialUsed {
    private Long id;
 
     @NotBlank (message = "The Quantity Cannot be null")
-   private Integer quantity;
+   private double quantity;
     @NotBlank(message = "The Associated production instance cannot be null")
    @ManyToOne
    @JoinColumn(name = "production_name")
@@ -39,7 +39,11 @@ public class RawMaterialUsed {
         return id;
     }
 
-    public @NotBlank(message = "The Quantity Cannot be null") Integer getQuantity() {
+    public void setQuantity(@NotBlank(message = "The Quantity Cannot be null") double quantity) {
+        this.quantity = quantity;
+    }
+
+    public @NotBlank(message = "The Quantity Cannot be null") double getQuantity() {
         return quantity;
     }
 

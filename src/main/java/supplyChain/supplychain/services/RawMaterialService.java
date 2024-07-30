@@ -65,7 +65,7 @@ public class RawMaterialService {
             return body;
         }
     }
-    public String updateStock(Long id, Integer quantity){
+    public Object updateStock(Long id, Integer quantity){
 
 
         RawMaterial existingRawMaterial= rawMaterialRepository.findById(id).orElseThrow(()->new RuntimeException("Raw Material does not exist"));
@@ -73,9 +73,13 @@ public class RawMaterialService {
         if (finalQuatity>=0){
             existingRawMaterial.setQuantity(finalQuatity);
             rawMaterialRepository.save(existingRawMaterial);
-            return "SUCCESSFULLY UPDATED";
+            Map<String, Object> body = new HashMap<>();
+            body.put("message", "Successfully updated");
+            return body;
         }
-        return "quantity is not available";
+        Map<String, Object> body = new HashMap<>();
+        body.put("message", "Quantity not available");
+        return body;
 
 
     }
