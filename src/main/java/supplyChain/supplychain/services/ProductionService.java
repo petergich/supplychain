@@ -48,6 +48,7 @@ public class ProductionService {
             production.setName("production" +production.getId() + "of " + quantity + " for " + product.getName());
             production.setFinalProductQuantity(quantity);
             production.setFinished(status);
+            production.setProduct(product);
             productionRepository.save(production);
             for(RawMaterialPropotion rawMaterialPropotion: rawMatrerialPropotions){
                 RawMaterialUsed rawMaterialUsed = new RawMaterialUsed();
@@ -92,11 +93,7 @@ public class ProductionService {
     }
     public Object getAllProductions(){
         List<Production> productions = productionRepository.findAll();
-        Map<Production, List<RawMaterialUsed>> production_instances = new HashMap<>();
-        for(Production production : productions){
-            List<RawMaterialUsed> rawMaterialUsed = rawMaterialUsedRepository.findByProduction(production);
-            production_instances.put(production, rawMaterialUsed);
-        }
-        return production_instances;
+
+        return productions;
     }
 }

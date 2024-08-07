@@ -29,8 +29,29 @@ public class User implements UserDetails {
     @NotBlank(message="Username is required")
     private String email;
     private boolean emailVerified=false;
+    private boolean accountApproved = false;
     @NotBlank(message="OTP is required")
     private String OTP;
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
+
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public boolean isAccountApproved() {
+        return accountApproved;
+    }
+
+    public void setAccountApproved(boolean accountApproved) {
+        this.accountApproved = accountApproved;
+    }
 
     public void setOTP(String OTP){
         this.OTP = OTP;

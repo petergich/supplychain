@@ -2,25 +2,34 @@ package supplyChain.supplychain.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import supplyChain.supplychain.dto.ProductDetails;
 import supplyChain.supplychain.entities.Product;
 import supplyChain.supplychain.entities.ProductCategory;
+import supplyChain.supplychain.entities.RawMaterialPropotion;
 import supplyChain.supplychain.repositories.ProductCategoryRepository;
 import supplyChain.supplychain.repositories.ProductRepository;
+import supplyChain.supplychain.repositories.ProductionRepository;
+import supplyChain.supplychain.repositories.RawMaterialProportionRepository;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @Service
 public class ProductService {
     @Autowired
+    RawMaterialPropotionService rawMaterialPropotionService;
+    @Autowired
     ProductRepository productRepository;
     @Autowired
     ProductCategoryRepository productCategoryRepository;
+    @Autowired
+    RawMaterialProportionRepository rawMaterialProportionRepository;
+    @Autowired
+    ProductionRepository productionRepository;
+
+
 
     public Object createProduct(ProductDetails productDetails){
 
@@ -73,7 +82,16 @@ public class ProductService {
     }
     public Object deleteProduct(Long id){
         if(productRepository.existsById(id)){
-            productRepository.delete(productRepository.findById(id).get());
+            Product product = productRepository.findById(id).get();
+            List<RawMaterialPropotion> rawMateriialProportions = rawMaterialProportionRepository.findByProduct(product);
+//            for (RawMaterialPropotion rawMaterialPropotion : rawMateriialProportions){
+//                rawMaterialPropotionService.deleteRawMaterialProportion(rawMaterialPropotion);
+//            }
+//            List<Production> productions = productionRepository.findByProduct(product);
+//            for (Production production : productions ){
+//                productionService.deleteProduction(production);
+//            }
+            productRepository.delete(product);
             Map<String, Object> body = new HashMap<>();
             body.put("message", "Deleted successfully");
             return body;

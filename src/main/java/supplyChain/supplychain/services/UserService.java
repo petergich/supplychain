@@ -53,6 +53,9 @@ public class UserService {
             return body;
         }
         User user = userRepository.findByUsername(loginRequest.getUsername()).get();
+        if(!user.isAccountApproved()){
+            return "Account not approved";
+        }
         if(user.getEmailVerified()){
         try {
             Authentication authentication = authenticationManager.authenticate(

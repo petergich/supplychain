@@ -5,10 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
+import supplyChain.supplychain.dto.PurchaseOrderDetails;
 import supplyChain.supplychain.entities.PurchaseOrder;
 import supplyChain.supplychain.services.PurchaseOrderService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -20,14 +22,13 @@ public class PurchaseOrderController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<?> createPurchaseOrder(@RequestBody PurchaseOrder purchaseOrder){
+    public ResponseEntity<?> createPurchaseOrder(@RequestBody PurchaseOrderDetails purchaseOrderDetails){
         try{
-            Object response = purchaseOrderService.createPurchaseOrder((purchaseOrder));
+            Object response = purchaseOrderService.createPurchaseOrder(purchaseOrderDetails);
             return new ResponseEntity<>(response,HttpStatus.OK);
-        } catch (HttpServerErrorException.InternalServerError e){
-            Map<String, String> body = new HashMap<>();
-            body.put("message", "An error occurred while creating the Purchase Order");
-            return new ResponseEntity<>(body, HttpStatus.OK);
+        } catch (Exception e){
+
+            return new ResponseEntity<>("An error occurred while trying to save", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @PostMapping("/update")
@@ -35,10 +36,8 @@ public class PurchaseOrderController {
         try{
             Object response = purchaseOrderService.updatePurchaseOrder(purchaseOrder);
             return new ResponseEntity<>(response,HttpStatus.OK);
-        } catch (HttpServerErrorException.InternalServerError e){
-            Map<String, String> body = new HashMap<>();
-            body.put("message", "An error occurred while updating the Purchase Order");
-            return new ResponseEntity<>(body, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<>("An error occurred while updating the Purchase Order", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @DeleteMapping("/{id}")
@@ -46,10 +45,13 @@ public class PurchaseOrderController {
         try{
             Object response = purchaseOrderService.deletePurchaseOrder(id);
             return new ResponseEntity<>(response,HttpStatus.OK);
-        } catch (HttpServerErrorException.InternalServerError e){
-            Map<String, String> body = new HashMap<>();
-            body.put("message", "An error occurred while creating the Purchase Order");
-            return new ResponseEntity<>(body, HttpStatus.OK);
+        }  catch (Exception e) {
+            throw new RuntimeException(e);
         }
+    }
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllPurchaseOrders(){
+        List<PurchaseOrder> response = purchaseOrderService.getAllPurchaseOrders();
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 }

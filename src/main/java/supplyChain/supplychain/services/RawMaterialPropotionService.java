@@ -1,15 +1,18 @@
 package supplyChain.supplychain.services;
 
 
+import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import supplyChain.supplychain.dto.RawmaterialProportionDetails;
+import supplyChain.supplychain.entities.Product;
 import supplyChain.supplychain.entities.RawMaterialPropotion;
 import supplyChain.supplychain.repositories.ProductRepository;
 import supplyChain.supplychain.repositories.RawMaterialProportionRepository;
 import supplyChain.supplychain.repositories.RawMaterialRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.fasterxml.jackson.databind.type.LogicalType.Map;
@@ -53,4 +56,8 @@ public class RawMaterialPropotionService {
 //    public Object updateRawMaterialPropotion(RawMaterialPropotion rawMaterialPropotion){
 //
 //    }
+    public Object getByProduct(Long id){
+        List<RawMaterialPropotion> rawMaterialProportions = rawMaterialProportionRepository.findByProduct(productRepository.findById(id).orElseThrow(() -> new Error("not found")));
+        return rawMaterialProportions;
+    }
 }

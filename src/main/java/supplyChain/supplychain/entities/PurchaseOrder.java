@@ -4,6 +4,7 @@ package supplyChain.supplychain.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -16,11 +17,19 @@ public class PurchaseOrder {
     private Supplier supplier;
 
     @NotNull
-    private Date date;
-
+    private LocalDate date;
     @NotNull
-    private Integer poNumber;
+    private String poNumber;
+    boolean delivered = false;
 
+
+    public void setDelivered(boolean delivered) {
+        this.delivered = delivered;
+    }
+
+    public boolean isDelivered() {
+        return delivered;
+    }
 
     public Supplier getSupplier() {
         return supplier;
@@ -30,11 +39,11 @@ public class PurchaseOrder {
         return id;
     }
 
-    public @NotNull Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public @NotNull Integer getPoNumber() {
+    public String getPoNumber() {
         return poNumber;
     }
 
@@ -42,11 +51,11 @@ public class PurchaseOrder {
         this.supplier = supplier;
     }
 
-    public void setDate(@NotNull Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public void setPoNumber(@NotNull Integer poNumber) {
+    public void setPoNumber(String poNumber) {
         this.poNumber = poNumber;
     }
 }

@@ -7,6 +7,7 @@ import supplyChain.supplychain.entities.Supplier;
 import supplyChain.supplychain.repositories.SupplierRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -14,16 +15,12 @@ public class SupplierService {
     @Autowired
     SupplierRepository supplierRepository;
 
-    public Object createSupplier(Supplier supplier){
+    public Supplier createSupplier(Supplier supplier)throws Exception{
         if(supplierRepository.existsByPhone(supplier.getPhone())){
-            Map<String, Object> body = new HashMap<>();
-            body.put("message", "A supplier with the phone number already exists");
-            return body;
+            throw new Exception("A Supplier with the same phone already exists");
         }
-        supplierRepository.save(supplier);
-        Map<String, Object> body = new HashMap<>();
-        body.put("message","Created successfully");
-        return body;
+        Supplier savedSupplier = supplierRepository.save(supplier);
+        return savedSupplier;
     }
     public Object deleteSupplier(Long id){
         Map<String, Object> body = new HashMap<>();
@@ -36,5 +33,8 @@ public class SupplierService {
             body.put("message","A supplier with the Id could not be found");
             return body;
         }
+    }
+    public List<Supplier> getAllSuppliers(){
+        return supplierRepository.findAll();
     }
 }

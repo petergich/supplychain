@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
+import supplyChain.supplychain.dto.RawMaterialOrderDetails;
 import supplyChain.supplychain.entities.RawMaterialOrder;
 import supplyChain.supplychain.services.RawMaterialOrderService;
 
@@ -15,13 +16,12 @@ public class RawMaterialOrderController {
     @Autowired
     RawMaterialOrderService rawMaterialOrderService;
     @PostMapping("/create")
-    public ResponseEntity<?> addProductOrder(RawMaterialOrder rawMaterialOrder){
+    public ResponseEntity<?> addProductOrder(RawMaterialOrderDetails rawMaterialOrderDetails){
         try{
-            Object response = rawMaterialOrderService.createRawMaterialOrder(rawMaterialOrder);
+            Object response = rawMaterialOrderService.createRawMaterialOrder(rawMaterialOrderDetails);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (HttpServerErrorException.InternalServerError e){
-            return new ResponseEntity<>(e,HttpStatus.INTERNAL_SERVER_ERROR);
-
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
     @PostMapping("/update")
@@ -35,9 +35,9 @@ public class RawMaterialOrderController {
         }
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProductOrder(@PathVariable Long id){
+    public ResponseEntity<?> deleteProductOrder(@PathVariable Long id) throws Exception{
         try{
-            Object response = rawMaterialOrderService.deleteRawMaterial(id);
+            Object response = rawMaterialOrderService.deleteRawMaterialOrder(id);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (HttpServerErrorException.InternalServerError e){
             return new ResponseEntity<>(e,HttpStatus.INTERNAL_SERVER_ERROR);

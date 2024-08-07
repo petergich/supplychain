@@ -4,10 +4,7 @@ package supplyChain.supplychain.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import supplyChain.supplychain.dto.RawmaterialProportionDetails;
 import supplyChain.supplychain.services.RawMaterialPropotionService;
 
@@ -23,5 +20,10 @@ public class RawMaterialPropotionController {
     public ResponseEntity<?> createRawMaterialProportion(@RequestBody RawmaterialProportionDetails rawmaterialProportionDetails){
         Object response = rawMaterialPropotionService.createRawMaterialPropotion(rawmaterialProportionDetails);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @GetMapping("/getbyproduct/{id}")
+    public ResponseEntity<?> getByProduct(@PathVariable Long id){
+        Object response = rawMaterialPropotionService.getByProduct(id);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 }

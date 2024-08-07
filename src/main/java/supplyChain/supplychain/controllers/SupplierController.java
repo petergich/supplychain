@@ -16,16 +16,16 @@ public class SupplierController {
     SupplierService supplierService;
 
 
-    @PostMapping("/createsupplier")
+    @PostMapping("/create")
     public ResponseEntity<?> createSupplier(@RequestBody Supplier supplier){
     try{
         Object response = supplierService.createSupplier(supplier);
         return new ResponseEntity<>(response, HttpStatus.OK);
-    } catch(IllegalAccessError e){
-        return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+    } catch(Exception e){
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
     }
-    @DeleteMapping("deletesupplier/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSupplier(@PathVariable Long id){
         try{
             Object response = supplierService.deleteSupplier(id);
@@ -33,6 +33,10 @@ public class SupplierController {
         } catch (IllegalArgumentException e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
+    }
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllSuppliers(){
+        return new ResponseEntity<>(supplierService.getAllSuppliers(), HttpStatus.OK);
     }
 
 }

@@ -18,6 +18,8 @@ import java.util.Optional;
 @Service
 public class ProductCategoryService {
     @Autowired
+    ProductService productService;
+    @Autowired
     ProductRepository productRepository;
     @Autowired
     JWTUtil jwtUtil;
@@ -46,7 +48,12 @@ public class ProductCategoryService {
     }
     public Object deleteProductCategory(Long id){
         if(productCategoryRepository.existsById(id)){
-            productCategoryRepository.delete(productCategoryRepository.findById(id).get());
+            ProductCategory category = productCategoryRepository.findById(id).get();
+            List<Product> products = productRepository.findByCategory(category);
+            for(Product product : products){
+                productService.deleteProduct(product.getId());
+            }
+            productCategoryRepository.delete(category);
             Map<String, Object> body = new HashMap<>();
             body.put("message", "successful");
             return body;

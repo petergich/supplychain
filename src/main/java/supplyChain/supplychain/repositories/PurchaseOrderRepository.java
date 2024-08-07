@@ -7,7 +7,7 @@ import supplyChain.supplychain.entities.PurchaseOrder;
 
 @Repository
 public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Long> {
-    boolean existsByPoNumber(Integer poNumber);
+    boolean existsByPoNumber(String poNumber);
 
 
 
