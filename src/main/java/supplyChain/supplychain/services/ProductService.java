@@ -102,6 +102,9 @@ public class ProductService {
             return body;
         }
     }
+    public Product getProductById(Long id) throws Exception{
+        return productRepository.findById(id).orElseThrow(() ->new Exception("The Product could not be found"));
+    }
     public String updateStock(Long id, Integer quantity){
 
 
@@ -109,6 +112,7 @@ public class ProductService {
         Integer finalQuatity = existingPRODUCT.getQuantity()+quantity;
         if (finalQuatity>=0){
             existingPRODUCT.setQuantity(finalQuatity);
+            productRepository.save(existingPRODUCT);
             return "SUCCESSFULY UPDATED";
         }
         return "quantity is not available";

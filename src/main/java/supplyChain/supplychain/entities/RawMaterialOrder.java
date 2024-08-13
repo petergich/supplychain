@@ -3,9 +3,9 @@ package supplyChain.supplychain.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
+import supplyChain.supplychain.event_listeners.RawMaterialEvents;
 
+@EntityListeners(RawMaterialEvents.class)
 @Entity
 public class RawMaterialOrder {
    @Id
@@ -61,5 +61,16 @@ public class RawMaterialOrder {
 
     public RawMaterial getrawMaterial() {
         return rawMaterial;
+    }
+
+    @Override
+    public String toString() {
+        return "RawMaterialOrder{" +
+                "id=" + id +
+                ", rawMaterial=" + rawMaterial +
+                ", purchaseOrder=" + purchaseOrder +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                '}';
     }
 }

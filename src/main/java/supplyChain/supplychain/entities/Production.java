@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
+
 @Entity
 public class Production {
     @Id
@@ -19,6 +21,17 @@ public class Production {
     @ManyToOne
     @JoinColumn(name = "productName")
     Product product;
+    @NotBlank
+    LocalDate date;
+
+
+    public @NotBlank LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(@NotBlank LocalDate date) {
+        this.date = date;
+    }
 
     private boolean finished;
 

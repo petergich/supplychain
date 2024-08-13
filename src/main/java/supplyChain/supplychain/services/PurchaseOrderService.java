@@ -49,7 +49,7 @@ public class PurchaseOrderService {
     public Object deletePurchaseOrder(Long id) throws Exception{
         if(purchaseOrderRepository.existsById(id)){
             PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id).get();
-            List<RawMaterialOrder>  rawMaterialOrders = rawMaterialOrderService.findByPurchaseOrder(purchaseOrder);
+            List<RawMaterialOrder>  rawMaterialOrders = rawMaterialOrderService.findByPurchaseOrder(purchaseOrder.getId());
             for( RawMaterialOrder rawMaterialOrder : rawMaterialOrders){
                 rawMaterialOrderService.deleteRawMaterialOrder(rawMaterialOrder.getId());
             }
@@ -67,18 +67,17 @@ public class PurchaseOrderService {
     public PurchaseOrder updatePurchaseOrder(PurchaseOrder purchaseOrder) throws Exception {
         if(purchaseOrderRepository.existsByPoNumber(purchaseOrder.getPoNumber())){
             PurchaseOrder purchaseOrder_instanse = purchaseOrderRepository.findById(purchaseOrder.getId()).get();
-            if(purchaseOrder.getPoNumber()!= null && !purchaseOrder.getPoNumber().equals("")){
+            if(purchaseOrder.getPoNumber()!= null && !purchaseOrderRepository.existsById(purchaseOrder.getId())){
                 purchaseOrder_instanse.setPoNumber(purchaseOrder.getPoNumber());
             }
-            if(purchaseOrder.getSupplier()!= null && !purchaseOrder.getSupplier().equals("")){
-                purchaseOrder_instanse.setSupplier(purchaseOrder.getSupplier());
-            }
+
             if(purchaseOrder.getDate() != null){
                 purchaseOrder_instanse.setDate((purchaseOrder.getDate()));
             }
             if(purchaseOrder.isDelivered() && !purchaseOrder_instanse.isDelivered()){
                 purchaseOrder_instanse.setDelivered(true);
-                List<RawMaterialOrder> rawMaterialOrders=rawMaterialOrderService.findByPurchaseOrder(purchaseOrder_instanse);
+                purchaseOrderRepository.save(purchaseOrder_instanse);
+                List<RawMaterialOrder> rawMaterialOrders=rawMaterialOrderService.findByPurchaseOrder(purchaseOrder_instanse.getId());
                 for(RawMaterialOrder rawMaterialOrder: rawMaterialOrders){
                     rawMaterialOrderService.updateStock(rawMaterialOrder);
                 }

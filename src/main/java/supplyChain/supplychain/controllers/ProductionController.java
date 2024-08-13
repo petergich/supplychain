@@ -18,7 +18,7 @@ public class ProductionController {
     @PostMapping("/create")
     public ResponseEntity<?> createProduction(@RequestBody ProductionDetails productionDetails){
         if(productionDetails.getProductId() != null && productionDetails.getQuantity() != null && productionDetails.getStatus()) {
-            Object response = productionService.createProduction(productionDetails.getProductId(), productionDetails.getQuantity(), productionDetails.getStatus());
+            Object response = productionService.createProduction(productionDetails);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         else{

@@ -2,18 +2,31 @@ package supplyChain.supplychain.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
+import java.time.LocalDate;
+
 public class ProductionDetails {
-    @NotBlank( message = "The productId cannot be null")
+    private LocalDate date;
     private Long productId;
-    @NotBlank(message = "The quantity field cannot be null")
     private Integer quantity;
     private boolean status;
 
-    public void setProductId(@NotBlank(message = "The productId cannot be null") Long productId) {
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
-    public void setQuantity(@NotBlank(message = "The quantity field cannot be null") Integer quantity) {
+    public void setQuantity( Integer quantity) {
         this.quantity = quantity;
     }
 

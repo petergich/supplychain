@@ -83,4 +83,7 @@ public class RawMaterialService {
 
 
     }
+    public RawMaterial getRawMaterialById(Long id) throws Exception{
+        return rawMaterialRepository.findById(id).orElseThrow(()-> new Exception("The raw material does not exist"));
+    }
 }

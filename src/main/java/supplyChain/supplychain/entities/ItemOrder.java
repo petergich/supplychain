@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class Order {
+public class ItemOrder {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,4 +15,5 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "product", nullable = false)
     private Product product;
+    private Integer quantity;
 }

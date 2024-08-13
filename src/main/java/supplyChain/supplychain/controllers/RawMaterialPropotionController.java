@@ -26,4 +26,12 @@ public class RawMaterialPropotionController {
         Object response = rawMaterialPropotionService.getByProduct(id);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteRawMaterialProportion(@PathVariable Long id){
+        try{
+            return new ResponseEntity(rawMaterialPropotionService.deleteRawMaterialProportion(id),HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
+        }
+    }
 }

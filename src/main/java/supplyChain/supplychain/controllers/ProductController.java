@@ -22,53 +22,52 @@ public class ProductController {
     ProductService productService;
 
 
-
     @PostMapping("/create")
-    public ResponseEntity<?> createProduct(@RequestBody ProductDetails product){
+    public ResponseEntity<?> createProduct(@RequestBody ProductDetails product) {
         System.out.println("Creating Product");
-        try{
+        try {
             Object response = productService.createProduct(product);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return new ResponseEntity<>("Unable To process", HttpStatus.OK);
         }
     }
+
     @GetMapping("/all")
-    public Object ResponseEntity(){
-        try{
+    public Object ResponseEntity() {
+        try {
             Object response = productService.getAllProducts();
-            return new ResponseEntity<>(response,HttpStatus.OK);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (HttpServerErrorException.InternalServerError e) {
             Map<String, Object> body = new HashMap<>();
             body.put("message", "Fetch Operation failed");
             return new ResponseEntity<>(body, HttpStatus.OK);
         }
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Long id){
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
         Object response = productService.deleteProduct(id);
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
     @PostMapping("/edit")
-    public ResponseEntity<?> editProduct(Product product){
-        try{
+    public ResponseEntity<?> editProduct(@RequestBody Product product) {
+        try {
             Object response = productService.editProduct(product);
-            return new ResponseEntity<>(response,HttpStatus.OK);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (HttpServerErrorException.InternalServerError e) {
             Map<String, Object> body = new HashMap<>();
             body.put("message", "Edit Operation failed");
             return new ResponseEntity<>(body, HttpStatus.OK);
         }
     }
-//    @PostMapping("/{id}")
-//    public ResponseEntity<?> updateStock(@PathVariable Long id,@RequestBody Integer quantity){
-//        try{
-//            Object response = productService.updateStock(id,quantity);
-//            return new ResponseEntity<>(response,HttpStatus.OK);
-//        } catch (HttpServerErrorException.InternalServerError e) {
-//            Map<String, Object> body = new HashMap<>();
-//            body.put("message", "Update Operation failed");
-//            return new ResponseEntity<>(body, HttpStatus.OK);
-//        }
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>("Product could not be found", HttpStatus.NOT_FOUND);
+        }
+    }
 }

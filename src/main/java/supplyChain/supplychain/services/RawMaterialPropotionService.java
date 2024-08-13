@@ -60,4 +60,9 @@ public class RawMaterialPropotionService {
         List<RawMaterialPropotion> rawMaterialProportions = rawMaterialProportionRepository.findByProduct(productRepository.findById(id).orElseThrow(() -> new Error("not found")));
         return rawMaterialProportions;
     }
+    public String deleteRawMaterialProportion(Long id) throws Exception{
+        RawMaterialPropotion rawMaterialProportion = rawMaterialProportionRepository.findById(id).orElseThrow(()->new Exception("Not found"));
+        rawMaterialProportionRepository.delete(rawMaterialProportion);
+        return "Deleted";
+    }
 }

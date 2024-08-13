@@ -25,12 +25,14 @@ public class RawMaterialOrderService {
     RawMaterialRepository rawMaterialRepository;
     @Autowired
     PurchaseOrderRepository purchaseOrderRepository;
+    @Autowired
+    RawMaterialService rawMaterialService;
 
 
     public RawMaterialOrder createRawMaterialOrder(RawMaterialOrderDetails rawMaterialOrderDetails) throws Exception{
-        RawMaterial rawMaterial = rawMaterialRepository.findById(rawMaterialOrderDetails.getRawMaterialId()).orElseThrow(()->new Exception("Raw material Not found"));
+        RawMaterial rawMaterial = rawMaterialService.getRawMaterialById(rawMaterialOrderDetails.getRawMaterialId());
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(rawMaterialOrderDetails.getPurchaseOrderId()).orElseThrow(()-> new Exception("The specified purchase order was not found"));
-        if (rawMaterialOrderRepository.existsByRawMaterial(rawMaterialRepository.findById(rawMaterialOrderDetails.getRawMaterialId()).get()) && rawMaterialOrderRepository.existsByPurchaseOrder(purchaseOrderRepository.findById(rawMaterialOrderDetails.getPurchaseOrderId()).get())) {
+        if (rawMaterialOrderRepository.existsByRawMaterial(rawMaterial) && rawMaterialOrderRepository.existsByPurchaseOrder(purchaseOrderRepository.findById(rawMaterialOrderDetails.getPurchaseOrderId()).get())) {
            throw new Exception("The raw material is already added under this Purchase order");
         } else {
             RawMaterialOrder rawMaterialOrder = new RawMaterialOrder();
@@ -70,13 +72,14 @@ public class RawMaterialOrderService {
             throw new Exception("Raw material was not found");
         }
     }
-    public List<RawMaterialOrder> findByPurchaseOrder(PurchaseOrder purchaseOrder ){
-        List<RawMaterialOrder> rawMaterialOrders = rawMaterialOrderRepository.findByPurchaseOrder(purchaseOrder);
+    public List<RawMaterialOrder> findByPurchaseOrder(Long id ) throws Exception {
+        List<RawMaterialOrder> rawMaterialOrders = rawMaterialOrderRepository.findByPurchaseOrder(purchaseOrderRepository.findById(id).orElseThrow(()->new Exception("The Purchase order wwas not found")));
         return rawMaterialOrders;
     }
     public RawMaterial updateStock(RawMaterialOrder rawMaterialOrder) throws Exception {
         try {
-            rawMaterialOrder.getrawMaterial().setQuantity(rawMaterialOrder.getrawMaterial().getQuantity()+rawMaterialOrder.getQuantity());
+            rawMaterialService.updateStock(rawMaterialOrder.getrawMaterial().getId(),rawMaterialOrder.getQuantity());
+            rawMaterialOrderRepository.save(rawMaterialOrder);
             return rawMaterialOrder.getrawMaterial();
         } catch(HttpServerErrorException.InternalServerError e){
             throw new Exception("The transaction was not successful");
