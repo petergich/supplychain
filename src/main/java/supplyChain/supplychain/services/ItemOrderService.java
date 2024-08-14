@@ -7,6 +7,7 @@ import supplyChain.supplychain.dto.ItemOrderDetails;
 import supplyChain.supplychain.entities.CustomerOrder;
 import supplyChain.supplychain.entities.ItemOrder;
 import supplyChain.supplychain.entities.Product;
+import supplyChain.supplychain.repositories.CustomerOrderRepository;
 import supplyChain.supplychain.repositories.ItemOrderRepository;
 import supplyChain.supplychain.repositories.ProductRepository;
 
@@ -19,11 +20,11 @@ public class ItemOrderService {
     @Autowired
     ProductService productService;
     @Autowired
-    CustomerOrderService customerOrderService;
+    CustomerOrderRepository customerOrderRepository;
 
     public ItemOrder createItemOrder(ItemOrderDetails itemOrderDetails) throws Exception {
         Product product = productService.getProductById(itemOrderDetails.getProductId());
-        CustomerOrder customerOrder = customerOrderService.findById(itemOrderDetails.getCustomerOrderId());
+        CustomerOrder customerOrder = customerOrderRepository.findById(itemOrderDetails.getCustomerOrderId()).orElseThrow(()-> new Exception("Customer order Not Found"));
         if(product.getQuantity()-itemOrderDetails.getQuantity()<0 && customerOrder.isDelivered()){
             throw new Exception("The quantity for "+product.getName()+"is not enough");
         }
