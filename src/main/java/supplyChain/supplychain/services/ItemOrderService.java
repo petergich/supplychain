@@ -18,12 +18,12 @@ public class ItemOrderService {
     @Autowired
     ItemOrderRepository itemOrderRepository;
     @Autowired
-    ProductService productService;
+    ProductRepository productRepository;
     @Autowired
     CustomerOrderRepository customerOrderRepository;
 
     public ItemOrder createItemOrder(ItemOrderDetails itemOrderDetails) throws Exception {
-        Product product = productService.getProductById(itemOrderDetails.getProductId());
+        Product product = productRepository.findById(itemOrderDetails.getProductId()).orElseThrow(()->new Exception("Product NOT FOUND"));
         CustomerOrder customerOrder = customerOrderRepository.findById(itemOrderDetails.getCustomerOrderId()).orElseThrow(()-> new Exception("Customer order Not Found"));
         if(product.getQuantity()-itemOrderDetails.getQuantity()<0 && customerOrder.isDelivered()){
             throw new Exception("The quantity for "+product.getName()+"is not enough");
@@ -38,5 +38,12 @@ public class ItemOrderService {
     }
     public List<ItemOrder> findItemOrdersByCustomerOrder(CustomerOrder customerOrder){
         return itemOrderRepository.findByCustomerOrder(customerOrder);
+    }
+    public List<ItemOrder> findByProduct(Product product){
+        return itemOrderRepository.findByProduct(product);
+    }
+    public String deleteItemOrder(ItemOrder itemOrder){
+        itemOrderRepository.delete(itemOrder);
+        return "Item Order deleted successfully";
     }
 }

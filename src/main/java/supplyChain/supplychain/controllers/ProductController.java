@@ -46,9 +46,13 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
-        Object response = productService.deleteProduct(id);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id){
+       try{
+            Object response = productService.deleteProduct(id);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch(Exception e) {
+           return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+       }
     }
 
     @PostMapping("/edit")

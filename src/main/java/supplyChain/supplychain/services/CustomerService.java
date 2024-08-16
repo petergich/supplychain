@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import supplyChain.supplychain.entities.Customer;
 import supplyChain.supplychain.repositories.CustomerRepository;
 
+import java.util.List;
+
 @Service
 public class CustomerService {
     @Autowired
@@ -32,5 +34,8 @@ public class CustomerService {
     public Customer findById(Long id) throws Exception{
         Customer customer = customerRepository.findById(id).orElseThrow(()-> new Exception("Customer not found"));
         return customer;
+    }
+    public List<Customer> getAllCustomers(){
+        return customerRepository.findAll();
     }
 }

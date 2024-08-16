@@ -4,16 +4,22 @@ package supplyChain.supplychain.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import supplyChain.supplychain.entities.RawMaterial;
+import supplyChain.supplychain.entities.RawMaterialPropotion;
+import supplyChain.supplychain.entities.RawMaterialUsed;
 import supplyChain.supplychain.repositories.RawMaterialRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class RawMaterialService {
     @Autowired
     RawMaterialRepository rawMaterialRepository;
-
+    @Autowired
+    RawMaterialUsedService rawMaterialUsedService;
+    @Autowired
+    RawMaterialPropotionService rawMaterialPropotionService;
     public Object createRawMaterial(RawMaterial rawMaterial){
 
         if(rawMaterialRepository.existsByName(rawMaterial.getName())){
@@ -52,17 +58,23 @@ public class RawMaterialService {
             return body;
         }
     }
-    public Object deleteRawMaterial(Long id){
+    public String deleteRawMaterial(Long id) throws Exception{
         if(rawMaterialRepository.existsById(id)){
-            rawMaterialRepository.delete(rawMaterialRepository.findById(id).get());
-            Map<String, Object> body = new HashMap<>();
-            body.put("message", "Deleted successfully");
-            return body;
+            RawMaterial rawMaterial = rawMaterialRepository.findById(id).orElseThrow(()-> new Exception("Raw Material Not Found"));
+            List<RawMaterialUsed> rawMaterialUseds = rawMaterialUsedService.findByRawMaterial(rawMaterial);
+            for(RawMaterialUsed rawMaterialUsed : rawMaterialUseds){
+                rawMaterialUsedService.deleteRawMaterialUsed(rawMaterialUsed.getId());
+            }
+            List<RawMaterialPropotion> rawMaterialPropotions = rawMaterialPropotionService.findByRawMaterial(rawMaterial);
+            for(RawMaterialPropotion rawMaterialPropotion : rawMaterialPropotions){
+                rawMaterialPropotionService.deleteRawMaterialProportion(rawMaterialPropotion.getId());
+            }
+            rawMaterialRepository.delete(rawMaterial);
+            return "Deleted successfully";
         }
         else{
-            Map<String, Object> body = new HashMap<>();
-            body.put("message", "The Raw Material does not exist");
-            return body;
+
+            return "The Raw Material does not exist";
         }
     }
     public Object updateStock(Long id, Integer quantity){

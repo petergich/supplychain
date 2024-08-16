@@ -45,8 +45,12 @@ public class RawMaterialController {
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id){
-        Object response = rawMaterialService.deleteRawMaterial(id);
-        return new ResponseEntity<>(response,HttpStatus.OK);
+       try {
+            Object response = rawMaterialService.deleteRawMaterial(id);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch(Exception e){
+           return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+       }
     }
     @PostMapping("/edit")
     public ResponseEntity<?> editProduct(RawMaterial rawMaterial){

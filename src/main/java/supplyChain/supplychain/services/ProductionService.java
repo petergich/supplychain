@@ -27,8 +27,6 @@ public class ProductionService {
     @Autowired
     RawMaterialRepository rawMaterialRepository;
     @Autowired
-    ProductService productService;
-    @Autowired
     RawMaterialProportionRepository rawMaterialProportionRepository;
     @Autowired
     ProductRepository productRepository;
@@ -93,9 +91,20 @@ public class ProductionService {
         }
 
     }
-    public Object getAllProductions(){
+    public List<Production> getAllProductions(){
         List<Production> productions = productionRepository.findAll();
 
         return productions;
+    }
+    public List<Production> findByProduct(Product product){
+        return productionRepository.findByProduct(product);
+    }
+    public String deleteProduction(Production production) throws Exception{
+        List<RawMaterialUsed> rawMaterialUseds = rawMaterialUsedRepository.findByProduction(production);
+        for(RawMaterialUsed rawMaterialUsed:rawMaterialUseds){
+            rawMaterialUsedRepository.delete(rawMaterialUsed);
+        }
+        productionRepository.delete(production);
+        return "deleted";
     }
 }

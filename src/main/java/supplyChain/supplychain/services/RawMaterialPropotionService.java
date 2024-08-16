@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import supplyChain.supplychain.dto.RawmaterialProportionDetails;
 import supplyChain.supplychain.entities.Product;
+import supplyChain.supplychain.entities.RawMaterial;
 import supplyChain.supplychain.entities.RawMaterialPropotion;
 import supplyChain.supplychain.repositories.ProductRepository;
 import supplyChain.supplychain.repositories.RawMaterialProportionRepository;
@@ -64,5 +65,10 @@ public class RawMaterialPropotionService {
         RawMaterialPropotion rawMaterialProportion = rawMaterialProportionRepository.findById(id).orElseThrow(()->new Exception("Not found"));
         rawMaterialProportionRepository.delete(rawMaterialProportion);
         return "Deleted";
+    }
+    public List<RawMaterialPropotion> findByRawMaterial(RawMaterial rawMaterial){
+        List<RawMaterialPropotion> rawMaterialPropotions = rawMaterialProportionRepository.findByRawMaterial(rawMaterial);
+        return rawMaterialPropotions;
+
     }
 }

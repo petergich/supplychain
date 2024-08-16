@@ -46,7 +46,7 @@ public class ProductCategoryService {
         body.put("message", "successful");
         return body;
     }
-    public Object deleteProductCategory(Long id){
+    public Object deleteProductCategory(Long id) throws Exception {
         if(productCategoryRepository.existsById(id)){
             ProductCategory category = productCategoryRepository.findById(id).get();
             List<Product> products = productRepository.findByCategory(category);

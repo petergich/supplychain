@@ -13,4 +13,5 @@ public interface RawMaterialProportionRepository extends JpaRepository<RawMateri
     boolean existsByProduct(Product product);
     boolean existsByRawMaterial(RawMaterial rawMaterial);
     List<RawMaterialPropotion> findByProduct(Product product);
+    List<RawMaterialPropotion> findByRawMaterial(RawMaterial rawMaterial);
 }
