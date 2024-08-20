@@ -65,7 +65,7 @@ public class PurchaseOrderService {
         }
     }
     public PurchaseOrder updatePurchaseOrder(PurchaseOrder purchaseOrder) throws Exception {
-        if(purchaseOrderRepository.existsByPoNumber(purchaseOrder.getPoNumber())){
+        if(purchaseOrderRepository.existsById(purchaseOrder.getId())){
             PurchaseOrder purchaseOrder_instanse = purchaseOrderRepository.findById(purchaseOrder.getId()).get();
             if(purchaseOrder.getPoNumber()!= null && !purchaseOrderRepository.existsById(purchaseOrder.getId())){
                 purchaseOrder_instanse.setPoNumber(purchaseOrder.getPoNumber());
