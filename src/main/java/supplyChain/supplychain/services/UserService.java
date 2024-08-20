@@ -88,9 +88,10 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public void deleteUser(Long id) {
+    public String deleteUser(Long id) throws Exception {
         Optional<User> user = userRepository.findById(id);
-        user.ifPresent(userRepository::delete);
+        userRepository.delete(userRepository.findById(id).orElseThrow(()->new Exception("User Not found") ));
+        return "deleted";
     }
 
     public Map<String, String> createUser(User user) {
@@ -190,4 +191,11 @@ public class UserService {
             return body;
         }
     }
+    public User changeStatus(Long id) throws Exception{
+        User user = userRepository.findById(id).orElseThrow(()-> new Exception("Üser Not Found"));
+        user.setAccountApproved(user.isAccountApproved()?false:true);
+        userRepository.save(user);
+        return user;
+    }
+
 }

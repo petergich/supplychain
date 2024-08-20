@@ -17,7 +17,7 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
     @NotBlank(message="Username is required")
     private String username;
     @NotBlank(message="Password is required")
@@ -119,4 +119,7 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    public Long getId() {
+        return id;
+    }
 }
