@@ -1,0 +1,22 @@
+schema {
+    query: Query
+    mutation: Mutator
+}
+type Query{
+    products: [Product]
+    product(id:ID!):Product
+}
+type Mutator{
+    product(id:ID):Product
+}
+type Product{
+    id:ID
+    name:String
+    price:Int
+    quantity:Int
+    category:ProductCategory
+}
+type ProductCategory{
+    id: ID
+    name:String
+}
