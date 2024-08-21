@@ -95,4 +95,7 @@ public class PurchaseOrderService {
     public List<PurchaseOrder> getAllPurchaseOrders(){
          return purchaseOrderRepository.findAll();
     }
+    public PurchaseOrder findById(Long id) throws Exception{
+        return purchaseOrderRepository.findById(id).orElseThrow(()-> new Exception("Purchase Order Not found"));
+    }
 }

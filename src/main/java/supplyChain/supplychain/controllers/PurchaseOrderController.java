@@ -54,4 +54,15 @@ public class PurchaseOrderController {
         List<PurchaseOrder> response = purchaseOrderService.getAllPurchaseOrders();
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPurchaseOrderById(@PathVariable Long id){
+        try {
+            PurchaseOrder response = purchaseOrderService.findById(id);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e){
+            Map<String, String> errorMap = new HashMap<>();
+            errorMap.put("error", "Purchase Order not found");
+            return new ResponseEntity<>(errorMap, HttpStatus.NOT_FOUND);
+        }
+    }
 }
