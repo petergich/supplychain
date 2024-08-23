@@ -53,8 +53,16 @@ public class UserService {
             return body;
         }
         User user = userRepository.findByUsername(loginRequest.getUsername()).get();
+        if(!user.getEmailVerified()){
+            Map<String, Object> body = new HashMap<>();
+            body.put("message", "Please verify your email first");
+            body.put("username", user.getUsername());
+            return body;
+        }
         if(!user.isAccountApproved()){
-            return "Account not approved";
+            Map<String, Object> body = new HashMap<>();
+            body.put("message", "Account not approved");
+            return body;
         }
         if(user.getEmailVerified()){
         try {
@@ -78,11 +86,9 @@ public class UserService {
             return body;
         }
     }
-        else{
-            Map<String, Object> body = new HashMap<>();
-            body.put("message", "Please verify your email first");
-            return body;
-        }
+    Map<String, Object> body = new HashMap<>();
+    body.put("message", "Account not approved");
+    return body;
     }
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
@@ -179,16 +185,14 @@ public class UserService {
         body.put("message", "Invalid Username");
         return body;
     }
-    public Object checkToken(String token){
+    public Object checkToken(String token) throws Exception{
         if(jwtUtil.validateToken(token)){
             Map<String, String> body = new HashMap<>();
             body.put("message", "valid");
             return body;
         }
         else{
-            Map<String, String> body = new HashMap<>();
-            body.put("message", "invalid");
-            return body;
+            throw new Exception("Invalid Token");
         }
     }
     public User changeStatus(Long id) throws Exception{

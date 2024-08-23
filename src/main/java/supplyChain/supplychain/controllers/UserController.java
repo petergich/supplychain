@@ -101,9 +101,9 @@ public class UserController {
         try{
             Object response = userService.checkToken(token);
             return new ResponseEntity<>(response,HttpStatus.OK);
-        } catch(InvalidRequestStateException e) {
+        } catch(Exception e) {
             Map<String,String> body = new HashMap<>();
-            body.put("message","An error occured while validating the token");
+            body.put("message",e.getMessage());
             return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
