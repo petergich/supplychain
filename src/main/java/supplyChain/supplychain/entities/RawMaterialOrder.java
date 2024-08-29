@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import supplyChain.supplychain.event_listeners.RawMaterialEvents;
 
-@EntityListeners(RawMaterialEvents.class)
+//@EntityListeners(RawMaterialEvents.class)
 @Entity
 public class RawMaterialOrder {
    @Id

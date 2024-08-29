@@ -32,9 +32,13 @@ public class RawMaterialOrderService {
     public RawMaterialOrder createRawMaterialOrder(RawMaterialOrderDetails rawMaterialOrderDetails) throws Exception{
         RawMaterial rawMaterial = rawMaterialService.getRawMaterialById(rawMaterialOrderDetails.getRawMaterialId());
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(rawMaterialOrderDetails.getPurchaseOrderId()).orElseThrow(()-> new Exception("The specified purchase order was not found"));
-        if (rawMaterialOrderRepository.existsByRawMaterial(rawMaterial) && rawMaterialOrderRepository.existsByPurchaseOrder(purchaseOrderRepository.findById(rawMaterialOrderDetails.getPurchaseOrderId()).get())) {
-           throw new Exception("The raw material is already added under this Purchase order");
-        } else {
+        List<RawMaterialOrder> rawMaterialOrders = rawMaterialOrderRepository.findByPurchaseOrder(purchaseOrderRepository.findById(rawMaterialOrderDetails.getPurchaseOrderId()).orElseThrow(()-> new Exception("Purchase Order does not exist")));
+        for (RawMaterialOrder rawMaterialOrder : rawMaterialOrders) {
+            if(rawMaterialOrder.getrawMaterial() == rawMaterial) {
+                throw new Exception("The raw material already exists under this order");
+            }
+        }
+
             RawMaterialOrder rawMaterialOrder = new RawMaterialOrder();
             rawMaterialOrder.setRawMaterial(rawMaterial);
             rawMaterialOrder.setPurchaseOrder(purchaseOrder);
@@ -43,9 +47,10 @@ public class RawMaterialOrderService {
             RawMaterialOrder rawMaterialOrder_created=rawMaterialOrderRepository.save(rawMaterialOrder);
             if(rawMaterialOrder.getPurchaseOrder().isDelivered()) {
                 rawMaterialOrder.getrawMaterial().setQuantity(rawMaterialOrder.getrawMaterial().getQuantity() + rawMaterialOrder.getQuantity());
+                rawMaterialService.updateStock(rawMaterial.getId(),rawMaterialOrderDetails.getQuantity());
             }
             return rawMaterialOrder_created;
-        }
+
 
     }
 
