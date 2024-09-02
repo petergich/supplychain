@@ -3,7 +3,9 @@ package supplyChain.supplychain.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import supplyChain.supplychain.entities.PurchaseOrder;
 import supplyChain.supplychain.entities.Supplier;
+import supplyChain.supplychain.repositories.PurchaseOrderRepository;
 import supplyChain.supplychain.repositories.SupplierRepository;
 
 import java.util.HashMap;
@@ -14,6 +16,10 @@ import java.util.Map;
 public class SupplierService {
     @Autowired
     SupplierRepository supplierRepository;
+    @Autowired
+    PurchaseOrderService purchaseOrderService;
+    @Autowired
+    private PurchaseOrderRepository purchaseOrderRepository;
 
     public Supplier createSupplier(Supplier supplier)throws Exception{
         if(supplierRepository.existsByPhone(supplier.getPhone())){
@@ -22,10 +28,15 @@ public class SupplierService {
         Supplier savedSupplier = supplierRepository.save(supplier);
         return savedSupplier;
     }
-    public Object deleteSupplier(Long id){
+    public Object deleteSupplier(Long id) throws Exception {
         Map<String, Object> body = new HashMap<>();
         if(supplierRepository.findById(id).isPresent()){
-          supplierRepository.delete(supplierRepository.findById(id).get());
+          Supplier supplier = supplierRepository.findById(id).get();
+          supplierRepository.delete(supplier);
+          List<PurchaseOrder> purchaseOrders = purchaseOrderService.findBySupplier(supplier);
+          for(PurchaseOrder purchaseOrder : purchaseOrders){
+              purchaseOrderService.deletePurchaseOrder(purchaseOrder.getId());
+          }
           body.put("message","Deleted successfully");
           return body;
         }
@@ -37,4 +48,5 @@ public class SupplierService {
     public List<Supplier> getAllSuppliers(){
         return supplierRepository.findAll();
     }
+
 }

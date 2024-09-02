@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import supplyChain.supplychain.dto.PurchaseOrderDetails;
 import supplyChain.supplychain.entities.PurchaseOrder;
 import supplyChain.supplychain.entities.RawMaterialOrder;
+import supplyChain.supplychain.entities.Supplier;
 import supplyChain.supplychain.repositories.PurchaseOrderRepository;
 import supplyChain.supplychain.repositories.SupplierRepository;
 
@@ -98,4 +99,8 @@ public class PurchaseOrderService {
     public PurchaseOrder findById(Long id) throws Exception{
         return purchaseOrderRepository.findById(id).orElseThrow(()-> new Exception("Purchase Order Not found"));
     }
+    public List<PurchaseOrder> findBySupplier(Supplier supplier){
+        return purchaseOrderRepository.findBySupplier(supplier);
+    }
+
 }

@@ -39,7 +39,7 @@ public class CustomerOrderService {
         if(customerOrder.isDelivered()){
             throw new Exception("The Customer order is already set to delivered");
         }else{
-            List<ItemOrder> itemOrders = itemOrderService.findItemOrdersByCustomerOrder(customerOrder);
+            List<ItemOrder> itemOrders = itemOrderService.findItemOrdersByCustomerOrder(id);
             for(ItemOrder itemOrder: itemOrders){
                 productService.updateStock(itemOrder.getProduct().getId(),itemOrder.getQuantity());
             }

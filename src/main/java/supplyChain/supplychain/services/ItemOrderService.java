@@ -28,6 +28,10 @@ public class ItemOrderService {
         if(product.getQuantity()-itemOrderDetails.getQuantity()<0 && customerOrder.isDelivered()){
             throw new Exception("The quantity for "+product.getName()+"is not enough");
         }
+        if(customerOrder.isDelivered()){
+            product.setQuantity(product.getQuantity()+itemOrderDetails.getQuantity());
+            productRepository.save(product);
+        }
         ItemOrder itemOrder = new ItemOrder();
         itemOrder.setCustomerOrder(customerOrder);
         itemOrder.setCustomerOrder(customerOrder);
@@ -36,7 +40,8 @@ public class ItemOrderService {
 
         return itemOrder;
     }
-    public List<ItemOrder> findItemOrdersByCustomerOrder(CustomerOrder customerOrder){
+    public List<ItemOrder> findItemOrdersByCustomerOrder(Long id) throws Exception{
+        CustomerOrder customerOrder = customerOrderRepository.findById(id).orElseThrow(()->new Exception("Customer order Not Found"));
         return itemOrderRepository.findByCustomerOrder(customerOrder);
     }
     public List<ItemOrder> findByProduct(Product product){

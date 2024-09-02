@@ -30,7 +30,7 @@ public class SupplierController {
         try{
             Object response = supplierService.deleteSupplier(id);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (IllegalArgumentException e){
+        } catch (Exception e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
     }

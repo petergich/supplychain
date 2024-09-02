@@ -40,7 +40,15 @@ public class JWTUtil {
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
-
+    public String generateResetPasswordJwtToken(String email) {
+        Date now = new Date();
+        return Jwts.builder()
+                .setSubject(email) // Set the subject (who is the token about)
+                .setIssuedAt(now) // Set the issued date
+                .setExpiration(new Date(now.getTime() + 1000*60*10)) // Set expiration time (10 minutes)
+                .signWith(SignatureAlgorithm.HS256, secret) // Sign the JWT using the secret key
+                .compact(); // Compact the JWT into a string
+    }
     public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(secret)

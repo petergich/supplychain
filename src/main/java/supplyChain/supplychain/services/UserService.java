@@ -5,6 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import supplyChain.supplychain.dto.PasswordResetDetails;
 import supplyChain.supplychain.entities.Product;
 import supplyChain.supplychain.entities.ProductCategory;
 import supplyChain.supplychain.entities.User;
@@ -200,6 +201,65 @@ public class UserService {
         user.setAccountApproved(user.isAccountApproved()?false:true);
         userRepository.save(user);
         return user;
+    }
+    public String forgetPassword(String email)throws Exception{
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new Exception("User with the email was not found"));
+        String token = jwtUtil.generateResetPasswordJwtToken(email);
+        String to = email;
+
+        // Subject of the email
+        String subject = "Password Reset Request";
+
+        // Password reset link (usually contains a token)
+        String resetLink = "http://192.168.254.100:3000/passwordreset/?token="+token;
+        String message = "<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "<head>\n" +
+                "    <title>Password Reset Request</title>\n" +
+                "    <style>\n" +
+                "        body { font-family: Arial, sans-serif; }\n" +
+                "        .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n" +
+                "        .header { background-color: #f4f4f4; padding: 10px; text-align: center; }\n" +
+                "        .content { padding: 20px; background-color: #ffffff; border: 1px solid #ddd; }\n" +
+                "        .footer { font-size: 0.9em; color: #888; text-align: center; padding: 10px; }\n" +
+                "        .button { display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px; }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <div class=\"container\">\n" +
+                "        <div class=\"header\">\n" +
+                "            <h1>Password Reset Request</h1>\n" +
+                "        </div>\n" +
+                "        <div class=\"content\">\n" +
+                "            <p>Hello {{name}},</p>\n" +
+                "            <p>We received a request to reset the password for your account.</p>\n" +
+                "            <p>To reset your password, please click the link below:</p>\n" +
+                "            <p><a href=\"{{resetLink}}\" class=\"button\">Reset Your Password</a></p>\n" +
+                "            <p>If you did not request a password reset, please ignore this email.</p>\n" +
+                "            <p>Thank you!</p>\n" +
+                "        </div>\n" +
+                "        <div class=\"footer\">\n" +
+                "            <p>If you have any questions, please contact us at support@example.com.</p>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</body>\n" +
+                "</html>";
+        message = message.replace("{{name}}", user.getUsername());
+        message = message.replace("{{resetLink}}", resetLink);
+        validation.sendEmail(to, subject, message);
+        return "Email sent";
+    }
+    public String resetPassword(PasswordResetDetails passwordResetDetails) throws Exception{
+        String token = passwordResetDetails.getToken();
+        User user = userRepository.findByEmail(jwtUtil.getUsernameFromToken(token)).orElseThrow(()->new Exception("User with the email was not found"));
+       if(jwtUtil.validateToken(token)) {
+            user.setPassword(passwordEncoder.encode(passwordResetDetails.getPassword()));
+
+            userRepository.save(user);
+            return "Password reset successful";
+        }else{
+           return "Password reset failed";
+       }
     }
 
 }

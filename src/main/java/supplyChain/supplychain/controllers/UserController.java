@@ -1,12 +1,7 @@
 package supplyChain.supplychain.controllers;
 
-import com.sun.jdi.request.InvalidRequestStateException;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import supplyChain.supplychain.dto.EmailDto;
+import supplyChain.supplychain.dto.PasswordResetDetails;
 import supplyChain.supplychain.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -117,4 +112,23 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+    @PostMapping("/forgetpassword")
+    public ResponseEntity<?> userForgetPassword(@RequestBody EmailDto email) {
+        try{
+            String response = userService.forgetPassword(email.getEmail());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+    @PostMapping("/resetpassword")
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordResetDetails details) {
+        try{
+            String response = userService.resetPassword(details);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
